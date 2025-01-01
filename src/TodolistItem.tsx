@@ -1,12 +1,37 @@
-import {Tasks} from "./App.tsx";
-import {Button} from "./Button.tsx";
+import {TasksType} from "./App.tsx";
+import {useState} from "react";
 
 type TodolistItemPropsType = {
     title: string;
-    tasks: Tasks[];
+    tasks: TasksType[];
+    removeTask: (taskId: number) => void;
 };
 
-export const TodolistItem = ({title, tasks}: TodolistItemPropsType) => {
+type FilterType = 'All' | 'Active' | 'Completed'
+
+export const TodolistItem = (
+    {title, tasks, removeTask}: TodolistItemPropsType) => {
+
+    const [filter, setFilter] = useState<FilterType>('All')
+
+    const handleFilterChange = (filter: FilterType) => {
+        setFilter(filter)
+    }
+
+    const getFilteredTasks = () => {
+        switch (filter) {
+            case 'Active': {
+                return tasks.filter((task) => !task.isDone)
+            }
+            case 'Completed': {
+                return tasks.filter((task) => task.isDone)
+            }
+            default:
+                return tasks
+        }
+    }
+
+    let filteredTasks = getFilteredTasks()
 
     return (
         <div>
@@ -17,9 +42,10 @@ export const TodolistItem = ({title, tasks}: TodolistItemPropsType) => {
             </div>
             {tasks.length
                 ? <ul>
-                    {tasks.map(task => {
+                    {filteredTasks.map(task => {
                         return (
                             <li key={task.id}>
+                                <button onClick={()=> removeTask(task.id)}>X</button>
                                 <input type="checkbox" checked={task.isDone}/>
                                 <span>{task.title}</span>
                             </li>
@@ -28,9 +54,9 @@ export const TodolistItem = ({title, tasks}: TodolistItemPropsType) => {
                 </ul>
                 : <span>Tasks list is empty</span>}
             <div>
-                <Button title='All'/>
-                <Button title='Active'/>
-                <Button title='Complete'/>
+                <button onClick={() => handleFilterChange('All')}>All</button>
+                <button onClick={() => handleFilterChange('Active')}>Active</button>
+                <button onClick={() => handleFilterChange('Completed')}>Completed</button>
             </div>
         </div>
     );
