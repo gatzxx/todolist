@@ -37,8 +37,10 @@ export const TodolistItem = ({title, tasks, removeTaskById, addNewTask}: Todolis
     const handleNewTaskTitleInputChange = (e: ChangeEvent<HTMLInputElement>) => setNewTaskTitle(e.currentTarget.value)
 
     const handleAddNewTask = () => {
-        addNewTask(newTaskTitle)
-        setNewTaskTitle('')
+        if (newTaskTitle.trim()) {
+            addNewTask(newTaskTitle);
+            setNewTaskTitle('');
+        }
     }
 
     const handleAddNewTaskOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
