@@ -1,9 +1,10 @@
 type ButtonPropsType = {
     title: string,
     onClick?: () => void,
+    className?: string,
 };
 
-export const Button = ({title, onClick}: ButtonPropsType) => {
+export const Button = ({title, onClick, className}: ButtonPropsType) => {
 
     const handleButtonClick = () => {
         if (onClick) {
@@ -12,6 +13,6 @@ export const Button = ({title, onClick}: ButtonPropsType) => {
     }
 
     return (
-        <button onClick={onClick ? handleButtonClick : undefined}>{title}</button>
+        <button onClick={onClick ? handleButtonClick : undefined} className={className}>{title}</button>
     );
 };

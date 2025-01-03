@@ -13,7 +13,8 @@ export function App() {
     const [tasks, setTasks] = useState<TasksType[]>([
         {id: v1(), title: 'HTML&CSS', isDone: true},
         {id: v1(), title: 'JS', isDone: true},
-        {id: v1(), title: 'ReactJS', isDone: false}
+        {id: v1(), title: 'ReactJS', isDone: true},
+        {id: v1(), title: 'TypeScript', isDone: false},
     ]);
 
     const removeTaskById = (taskId: string) => {

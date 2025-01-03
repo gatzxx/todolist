@@ -65,21 +65,23 @@ export const TodolistItem = ({
         }
     }
 
+    const handleToggleTaskStatus = (taskId: string, isDone: boolean) => {
+        toggleTaskStatus(taskId, isDone)
+    }
+
     const mappedTasks = filteredTasks.map(t => {
         const handleRemoveTask = () => removeTaskById(t.id)
 
-        const handleToggleTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
-            toggleTaskStatus(t.id, e.currentTarget.checked)
-        }
-
         return (
-            <li key={t.id}>
+            <li key={t.id}
+                className={t.isDone ? 'isDone' : ''}
+            >
                 <Button onClick={handleRemoveTask}
                         title='X'
                 />
                 <input type="checkbox"
                        checked={t.isDone}
-                       onChange={handleToggleTaskStatus}
+                       onChange={e => handleToggleTaskStatus(t.id, e.currentTarget.checked)}
                 />
                 <span>{t.title}</span>
             </li>
@@ -90,7 +92,7 @@ export const TodolistItem = ({
         <div>
             <h3>{title}</h3>
             <div>
-                {error && <div style={{color: 'red'}}>{error}</div>}
+                {error && <div className={'errorMessage'}>{error}</div>}
                 <input value={newTaskTitle}
                        onChange={handleTitleChange}
                        onKeyDown={handleAddTaskOnEnter}
@@ -101,16 +103,19 @@ export const TodolistItem = ({
             </div>
             {tasks.length
                 ? <ul>{mappedTasks}</ul>
-                : <span>Tasks list is empty</span>}
+                : <span>Your task list is empty!</span>}
             <div>
                 <Button onClick={() => handleFilterChange('All')}
                         title='All'
+                        className={ filter === 'All' ? 'activeFilter' : '' }
                 />
                 <Button onClick={() => handleFilterChange('Active')}
                         title='Active'
+                        className={ filter === 'Active' ? 'activeFilter' : '' }
                 />
                 <Button onClick={() => handleFilterChange('Completed')}
                         title='Completed'
+                        className={ filter === 'Completed' ? 'activeFilter' : '' }
                 />
             </div>
         </div>
