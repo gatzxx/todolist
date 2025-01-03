@@ -9,7 +9,7 @@ export type TasksType = {
     isDone: boolean;
 }
 
-function App() {
+export function App() {
     const [tasks, setTasks] = useState<TasksType[]>([
         {id: v1(), title: 'HTML&CSS', isDone: true},
         {id: v1(), title: 'JS', isDone: true},
@@ -25,6 +25,10 @@ function App() {
         setTasks([newTask, ...tasks])
     }
 
+    const toggleTaskStatus = (taskId: string, isDone: boolean) => {
+        setTasks(tasks.map(t => t.id === taskId ? {...t, isDone: isDone} : t))
+    }
+
     return (
         <div className="app">
             <TodolistItem
@@ -32,9 +36,8 @@ function App() {
                 tasks={tasks}
                 removeTaskById={removeTaskById}
                 addNewTask={addNewTask}
+                toggleTaskStatus={toggleTaskStatus}
             />
         </div>
     )
 }
-
-export default App

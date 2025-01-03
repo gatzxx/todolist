@@ -7,6 +7,7 @@ type TodolistItemPropsType = {
     tasks: TasksType[];
     removeTaskById: (taskId: string) => void;
     addNewTask: (newTaskTitle: string) => void;
+    toggleTaskStatus: (taskId: string, isDone: boolean) => void;
 };
 
 type FilterType = 'All' | 'Active' | 'Completed'
@@ -15,8 +16,9 @@ export const TodolistItem = ({
                                  title,
                                  tasks,
                                  removeTaskById,
-                                 addNewTask
-}: TodolistItemPropsType) => {
+                                 addNewTask,
+                                 toggleTaskStatus
+                             }: TodolistItemPropsType) => {
 
     const [filter, setFilter] = useState<FilterType>('All')
 
@@ -66,6 +68,10 @@ export const TodolistItem = ({
     const mappedTasks = filteredTasks.map(t => {
         const handleRemoveTask = () => removeTaskById(t.id)
 
+        const handleToggleTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
+            toggleTaskStatus(t.id, e.currentTarget.checked)
+        }
+
         return (
             <li key={t.id}>
                 <Button onClick={handleRemoveTask}
@@ -73,6 +79,7 @@ export const TodolistItem = ({
                 />
                 <input type="checkbox"
                        checked={t.isDone}
+                       onChange={handleToggleTaskStatus}
                 />
                 <span>{t.title}</span>
             </li>
@@ -83,7 +90,7 @@ export const TodolistItem = ({
         <div>
             <h3>{title}</h3>
             <div>
-                {error && <div style={{ color: 'red' }}>{error}</div>}
+                {error && <div style={{color: 'red'}}>{error}</div>}
                 <input value={newTaskTitle}
                        onChange={handleTitleChange}
                        onKeyDown={handleAddTaskOnEnter}
