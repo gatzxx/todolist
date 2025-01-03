@@ -11,51 +11,58 @@ type TodolistItemPropsType = {
 
 type FilterType = 'All' | 'Active' | 'Completed'
 
-export const TodolistItem = ({title, tasks, removeTaskById, addNewTask}: TodolistItemPropsType) => {
+export const TodolistItem = ({
+                                 title,
+                                 tasks,
+                                 removeTaskById,
+                                 addNewTask
+}: TodolistItemPropsType) => {
 
     const [filter, setFilter] = useState<FilterType>('All')
 
     const handleFilterChange = (filter: FilterType) => setFilter(filter)
 
-    const getFilteredTasks = () => {
+    const getTasksByFilter = () => {
         switch (filter) {
-            case 'Active': {
-                return tasks.filter((task) => !task.isDone)
-            }
-            case 'Completed': {
-                return tasks.filter((task) => task.isDone)
-            }
+            case 'Active':
+                return tasks.filter(t => !t.isDone)
+            case 'Completed':
+                return tasks.filter(t => t.isDone)
             default:
                 return tasks
         }
     }
 
-    let filteredTasks = getFilteredTasks()
+    let filteredTasks = getTasksByFilter()
 
     const [newTaskTitle, setNewTaskTitle] = useState('')
 
-    const handleNewTaskTitleInputChange = (e: ChangeEvent<HTMLInputElement>) => setNewTaskTitle(e.currentTarget.value)
+    const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => setNewTaskTitle(e.currentTarget.value)
 
-    const handleAddNewTask = () => {
+    const handleAddTask = () => {
         if (newTaskTitle.trim()) {
             addNewTask(newTaskTitle);
             setNewTaskTitle('');
         }
     }
 
-    const handleAddNewTaskOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    const handleAddTaskOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            handleAddNewTask()
+            handleAddTask()
         }
     }
 
     const mappedTasks = filteredTasks.map(t => {
-        const handleRemoveTaskById = () => removeTaskById(t.id)
+        const handleRemoveTask = () => removeTaskById(t.id)
 
         return (
             <li key={t.id}>
-                <Button onClick={handleRemoveTaskById} title='X'/>
-                <input type="checkbox" checked={t.isDone}/>
+                <Button onClick={handleRemoveTask}
+                        title='X'
+                />
+                <input type="checkbox"
+                       checked={t.isDone}
+                />
                 <span>{t.title}</span>
             </li>
         )
@@ -65,17 +72,27 @@ export const TodolistItem = ({title, tasks, removeTaskById, addNewTask}: Todolis
         <div>
             <h3>{title}</h3>
             <div>
-                <input value={newTaskTitle} onChange={handleNewTaskTitleInputChange}
-                       onKeyDown={handleAddNewTaskOnEnter}/>
-                <Button onClick={handleAddNewTask} title='+'/>
+                <input value={newTaskTitle}
+                       onChange={handleTitleChange}
+                       onKeyDown={handleAddTaskOnEnter}
+                />
+                <Button onClick={handleAddTask}
+                        title='+'
+                />
             </div>
             {tasks.length
                 ? <ul>{mappedTasks}</ul>
                 : <span>Tasks list is empty</span>}
             <div>
-                <Button onClick={() => handleFilterChange('All')} title='All'/>
-                <Button onClick={() => handleFilterChange('Active')} title='Active'/>
-                <Button onClick={() => handleFilterChange('Completed')} title='Completed'/>
+                <Button onClick={() => handleFilterChange('All')}
+                        title='All'
+                />
+                <Button onClick={() => handleFilterChange('Active')}
+                        title='Active'
+                />
+                <Button onClick={() => handleFilterChange('Completed')}
+                        title='Completed'
+                />
             </div>
         </div>
     );
