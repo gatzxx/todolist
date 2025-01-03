@@ -37,11 +37,22 @@ export const TodolistItem = ({
 
     const [newTaskTitle, setNewTaskTitle] = useState('')
 
-    const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => setNewTaskTitle(e.currentTarget.value)
+    const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setError(null);
+        setNewTaskTitle(e.currentTarget.value)
+    }
+
+    const [error, setError] = useState<string | null>(null);
 
     const handleAddTask = () => {
-        if (newTaskTitle.trim()) {
-            addNewTask(newTaskTitle);
+        const trimmedTitle = newTaskTitle.trim()
+
+        if (trimmedTitle !== '') {
+            addNewTask(trimmedTitle);
+            setNewTaskTitle('');
+            setError(null);
+        } else {
+            setError("Task title cannot be empty or contain only spaces!");
             setNewTaskTitle('');
         }
     }
@@ -72,6 +83,7 @@ export const TodolistItem = ({
         <div>
             <h3>{title}</h3>
             <div>
+                {error && <div style={{ color: 'red' }}>{error}</div>}
                 <input value={newTaskTitle}
                        onChange={handleTitleChange}
                        onKeyDown={handleAddTaskOnEnter}
