@@ -23,6 +23,12 @@ export const TodolistItem = ({
     // Состояние для хранения текущего фильтра
     const [filter, setFilter] = useState<FilterType>('All')
 
+    // Состояние для хранения ошибки (если заголовок задачи пустой)
+    const [error, setError] = useState<string | null>(null);
+
+    // Состояние для хранения заголовка новой задачи
+    const [newTaskTitle, setNewTaskTitle] = useState('')
+
     // Устанавливает выбранный фильтр
     const handleFilterChange = (filter: FilterType) => setFilter(filter)
 
@@ -41,16 +47,10 @@ export const TodolistItem = ({
     // Переменная с отфильтрованными задачами
     let filteredTasks = getTasksByFilter()
 
-    // Состояние для хранения заголовка новой задачи
-    const [newTaskTitle, setNewTaskTitle] = useState('')
-
     // Обрабатывает изменение значения в поле ввода заголовка задачи
     const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setNewTaskTitle(e.currentTarget.value)
     }
-
-    // Состояние для хранения ошибки (если заголовок задачи пустой)
-    const [error, setError] = useState<string | null>(null);
 
     // Добавляет новую задачу, если заголовок не пустой
     const handleAddTask = () => {

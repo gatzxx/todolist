@@ -1,18 +1,10 @@
-type ButtonPropsType = {
-    title: string,
-    onClick?: () => void,
-    className?: string,
-};
+import {ButtonHTMLAttributes} from "react";
 
-export const Button = ({title, onClick, className}: ButtonPropsType) => {
+type ButtonPropsType = ButtonHTMLAttributes<HTMLButtonElement>
 
-    const handleButtonClick = () => {
-        if (onClick) {
-            onClick();
-        }
-    }
+export const Button = ({title, className, onClick}: ButtonPropsType) => {
 
     return (
-        <button onClick={onClick ? handleButtonClick : undefined} className={className}>{title}</button>
+        <button onClick={onClick} className={className}>{title}</button>
     );
 };
