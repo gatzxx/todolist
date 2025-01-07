@@ -11,13 +11,16 @@ export type TasksType = {
 
 export function App() {
 
-    // Состояние для хранения списка задач
-    const [tasks, setTasks] = useState<TasksType[]>([
+    // Переменная с начальным состоянием списка задач
+    const state: TasksType[] = [
         {id: v1(), title: 'HTML&CSS', isDone: true},
         {id: v1(), title: 'JS', isDone: true},
         {id: v1(), title: 'ReactJS', isDone: true},
         {id: v1(), title: 'TypeScript', isDone: false},
-    ]);
+    ]
+
+    // Состояние для хранения списка задач
+    const [tasks, setTasks] = useState<TasksType[]>(state);
 
     // Удаляет задачу по её ID
     const removeTaskById = (taskId: string) => {
