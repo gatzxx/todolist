@@ -100,6 +100,9 @@ export const TodolistItem = ({
         )
     })
 
+    // Каррированная функция: создает обработчик клика, передающий filter в handleFilterChange.
+    const handleFilterClick = (filter: FilterType) => () => handleFilterChange(filter)
+
     return (
         <div>
             <h3>{title}</h3>
@@ -120,15 +123,15 @@ export const TodolistItem = ({
             <div>
                 <Button className={filter === 'All' ? 'activeFilter' : ''}
                         title='All'
-                        onClick={() => handleFilterChange('All')}
+                        onClick={handleFilterClick('All')}
                 />
                 <Button className={filter === 'Active' ? 'activeFilter' : ''}
                         title='Active'
-                        onClick={() => handleFilterChange('Active')}
+                        onClick={handleFilterClick('Active')}
                 />
                 <Button className={filter === 'Completed' ? 'activeFilter' : ''}
                         title='Completed'
-                        onClick={() => handleFilterChange('Completed')}
+                        onClick={handleFilterClick('Completed')}
                 />
             </div>
         </div>
