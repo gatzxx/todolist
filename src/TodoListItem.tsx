@@ -3,16 +3,18 @@ import {ChangeEvent, KeyboardEvent, useState} from "react";
 import {Button} from "./Button.tsx";
 
 type TodolistItemPropsType = {
+    id: string,
     title: string;
     tasks: TasksType[];
-    removeTaskById: (taskId: string) => void;
-    addNewTask: (newTaskTitle: string) => void;
-    toggleTaskStatus: (taskId: string, isDone: boolean) => void;
+    removeTaskById: (taskId: string, todoListId: string) => void;
+    addNewTask: (newTaskTitle: string, todoListId: string) => void;
+    toggleTaskStatus: (taskId: string, isDone: boolean, todoListId: string) => void;
 };
 
-type FilterType = 'All' | 'Active' | 'Completed'
+export type FilterType = 'All' | 'Active' | 'Completed'
 
-export const TodolistItem = ({
+export const TodoListItem = ({
+                                 id,
                                  title,
                                  tasks,
                                  removeTaskById,
@@ -57,7 +59,7 @@ export const TodolistItem = ({
         const trimmedTitle = newTaskTitle.trim()
 
         if (trimmedTitle !== '') {
-            addNewTask(trimmedTitle);
+            addNewTask(trimmedTitle, id);
             setNewTaskTitle('');
             setError(null);
         } else {
@@ -76,13 +78,13 @@ export const TodolistItem = ({
 
     // Переключает статус задачи (выполнена/не выполнена)
     const handleToggleTaskStatus = (taskId: string, isDone: boolean) => {
-        toggleTaskStatus(taskId, isDone)
+        toggleTaskStatus(taskId, isDone, id)
     }
 
     // Мапит отфильтрованные задачи в элементы списка
     const mappedTasks = filteredTasks.map(t => {
         // Удаляет задачу по её ID
-        const handleRemoveTask = () => removeTaskById(t.id)
+        const handleRemoveTask = () => removeTaskById(t.id, id)
 
         return (
             <li key={t.id}
