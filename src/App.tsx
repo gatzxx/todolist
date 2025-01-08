@@ -59,8 +59,7 @@ export function App() {
         setTasksObj(updatedTasks);*/
         setTasksObj(prev => ({
             ...prev,
-            [todoListId]: prev[todoListId].filter(task => task.id !== taskId)
-        }))
+            [todoListId]: prev[todoListId].filter(task => task.id !== taskId)}))
     }
 
     // Добавляет новую задачу
@@ -70,8 +69,7 @@ export function App() {
         setTasksObj(updatedTasks)*/
         setTasksObj(prev => ({
             ...prev,
-            [todoListId]: [newTask, ...prev[todoListId]]
-        }))
+            [todoListId]: [newTask, ...prev[todoListId]]}))
     }
 
     // Переключает статус задачи (выполнена/не выполнена) по её ID
@@ -80,8 +78,7 @@ export function App() {
         setTasksObj(updatedTasks)*/
         setTasksObj(prev => ({
             ...prev,
-            [todoListId]: prev[todoListId].map(t => t.id === taskId ? {...t, isDone: isDone} : t)
-        }))
+            [todoListId]: prev[todoListId].map(t => t.id === taskId ? {...t, isDone: isDone} : t)}))
     }
 
     // Удаляет список задач по его ID
@@ -99,6 +96,19 @@ export function App() {
         setTasksObj(prev => ({...prev, [newTodoList.id]: []}))
     }
 
+    // Изменяет название задачи
+    const changeTaskTitle = (newTaskTitle: string, taskId: string, todoListId: string) => {
+        setTasksObj(prev => ({
+            ...prev,
+            [todoListId]: prev[todoListId].map(t => t.id === taskId ? {...t, title: newTaskTitle} : t)}))
+    }
+
+    // Изменяет название списка задач
+    const changeTodoListTitle = (newTodoListTitle: string, todoListId: string) => {
+        setTodoLists(prev => (
+            prev.map(tl => tl.id === todoListId ? {...tl, title: newTodoListTitle} : tl)))
+    }
+
     // Мапит список задач для рендеринга
     const mappedTodoLists = todoLists.map(tl => {
         const tasksForTodolist = tasksObj[tl.id]
@@ -113,6 +123,8 @@ export function App() {
                 addNewTask={addNewTask}
                 toggleTaskStatus={toggleTaskStatus}
                 removeTodoListById={removeTodoListById}
+                changeTaskTitle={changeTaskTitle}
+                changeTodoListTitle={changeTodoListTitle}
             />
         )
     })

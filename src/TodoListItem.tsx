@@ -3,6 +3,7 @@ import {useState} from "react";
 import {Button} from "./Button.tsx";
 import {AddItemForm} from "./AddItemForm.tsx";
 import {FilterBar} from "./FilterBar.tsx";
+import {EditableSpan} from "./EditableSpan.tsx";
 
 type TodolistItemPropsType = {
     id: string,
@@ -12,6 +13,8 @@ type TodolistItemPropsType = {
     addNewTask: (newTaskTitle: string, todoListId: string) => void;
     toggleTaskStatus: (taskId: string, isDone: boolean, todoListId: string) => void;
     removeTodoListById: (todoListId: string) => void
+    changeTaskTitle: (newTaskTitle: string, taskId: string, todoListId: string) => void
+    changeTodoListTitle: (newTodoListTitle: string, todoListId: string) => void
 };
 
 export type FilterType = 'All' | 'Active' | 'Completed'
@@ -23,7 +26,9 @@ export function TodoListItem({
                                  removeTaskById,
                                  addNewTask,
                                  toggleTaskStatus,
-                                 removeTodoListById
+                                 removeTodoListById,
+                                 changeTaskTitle,
+                                 changeTodoListTitle
                              }: TodolistItemPropsType) {
 
     // Состояние для хранения текущего фильтра
@@ -62,10 +67,20 @@ export function TodoListItem({
         addNewTask(value, id)
     }
 
+    // Изменяет название списка задач
+    const handleChangeTitle = (value: string) => {
+        changeTodoListTitle(value, id)
+    }
+
     // Мапит отфильтрованные задачи в элементы списка
     const mappedTasks = filteredTasks.map(t => {
         // Удаляет задачу по её ID
         const handleRemoveTask = () => removeTaskById(t.id, id)
+
+        // Изменяет название задачи
+        const handleChangeTitle = (value: string) => {
+            changeTaskTitle(value, t.id, id)
+        }
 
         return (
             <li key={t.id}
@@ -78,14 +93,17 @@ export function TodoListItem({
                        checked={t.isDone}
                        onChange={e => handleToggleTaskStatus(t.id, e.currentTarget.checked)}
                 />
-                <span>{t.title}</span>
+                <EditableSpan title={t.title} onTitleChange={handleChangeTitle}/>
             </li>
         )
     })
 
     return (
         <div>
-            <h3><Button title={'X'} onClick={handleRemoveTodoList}/>{title}</h3>
+            <div>
+                <Button title={'X'} onClick={handleRemoveTodoList}/>
+                <EditableSpan title={title} onTitleChange={handleChangeTitle}/>
+            </div>
             <AddItemForm addItem={handleAddTask}/>
             <div>
                 {tasks.length

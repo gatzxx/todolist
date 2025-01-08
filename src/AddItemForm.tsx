@@ -13,29 +13,29 @@ export function AddItemForm({
     const [error, setError] = useState<string | null>(null);
 
     // Состояние для хранения заголовка
-    const [titleValue, setTitleValue] = useState('')
+    const [inputValue, setInputValue] = useState('')
 
     // Обрабатывает изменение значения в поле ввода заголовка
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setTitleValue(e.currentTarget.value)
+        setInputValue(e.currentTarget.value)
     }
 
     // Добавляет элемент, если заголовок не пустой
     const handleAddItem = () => {
-        const trimmedTitleValue = titleValue.trim()
+        const trimmedInputValue = inputValue.trim()
 
-        if (trimmedTitleValue !== '') {
-            addItem(trimmedTitleValue);
-            setTitleValue('');
+        if (trimmedInputValue !== '') {
+            addItem(trimmedInputValue);
+            setInputValue('');
             setError(null);
         } else {
             setError("Title cannot be empty!");
-            setTitleValue('');
+            setInputValue('');
         }
     }
 
     // Обрабатывает добавление элемента при нажатии клавиши Enter
-    const handleAddItemOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
         setError(null);
         if (e.key === 'Enter') {
             handleAddItem()
@@ -45,9 +45,9 @@ export function AddItemForm({
     return (
         <>
             <input className={error ? 'error' : ''}
-                   value={titleValue}
+                   value={inputValue}
                    onChange={handleInputChange}
-                   onKeyDown={handleAddItemOnEnter}
+                   onKeyDown={handleKeyPress}
             />
             <Button onClick={handleAddItem}
                     title='+'
