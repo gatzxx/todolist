@@ -2,6 +2,7 @@ import './App.css'
 import {FilterType, TodoListItem} from "./TodoListItem.tsx";
 import {useState} from "react";
 import {v1} from "uuid";
+import {AddItemForm} from "./AddItemForm.tsx";
 
 export type TasksType = {
     id: string;
@@ -91,6 +92,13 @@ export function App() {
         setTasksObj({...tasksObj})
     }
 
+    // Добавляет новый список задач
+    const addNewTodoList = (newTodoListTitle: string) => {
+        const newTodoList: TodoListsType = {id: v1(), title: newTodoListTitle, filter: 'All'}
+        setTodoLists(prev => [newTodoList, ...prev])
+        setTasksObj(prev => ({...prev, [newTodoList.id]: []}))
+    }
+
     // Мапит список задач для рендеринга
     const mappedTodoLists = todoLists.map(tl => {
         const tasksForTodolist = tasksObj[tl.id]
@@ -111,6 +119,9 @@ export function App() {
 
     return (
         <div className="app">
+            <div>
+                <AddItemForm addItem={addNewTodoList}/>
+            </div>
             {todoLists.length
                 ? <>{mappedTodoLists}</>
                 : <span>Your TodoList is empty!</span>}
