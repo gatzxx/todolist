@@ -9,6 +9,7 @@ type TodolistItemPropsType = {
     removeTaskById: (taskId: string, todoListId: string) => void;
     addNewTask: (newTaskTitle: string, todoListId: string) => void;
     toggleTaskStatus: (taskId: string, isDone: boolean, todoListId: string) => void;
+    removeTodoListById: (todoListId: string) => void
 };
 
 export type FilterType = 'All' | 'Active' | 'Completed'
@@ -19,7 +20,8 @@ export const TodoListItem = ({
                                  tasks,
                                  removeTaskById,
                                  addNewTask,
-                                 toggleTaskStatus
+                                 toggleTaskStatus,
+                                 removeTodoListById
                              }: TodolistItemPropsType) => {
 
     // Состояние для хранения текущего фильтра
@@ -81,6 +83,14 @@ export const TodoListItem = ({
         toggleTaskStatus(taskId, isDone, id)
     }
 
+    // Каррированная функция: создает обработчик клика, передающий filter в handleFilterChange.
+    const handleFilterClick = (filter: FilterType) => () => handleFilterChange(filter)
+
+    // Удаляет список задачи по его ID
+    const handleRemoveTodoList = () => {
+        removeTodoListById(id)
+    }
+
     // Мапит отфильтрованные задачи в элементы списка
     const mappedTasks = filteredTasks.map(t => {
         // Удаляет задачу по её ID
@@ -102,14 +112,13 @@ export const TodoListItem = ({
         )
     })
 
-    // Каррированная функция: создает обработчик клика, передающий filter в handleFilterChange.
-    const handleFilterClick = (filter: FilterType) => () => handleFilterChange(filter)
-
     return (
         <div>
-            <h3>{title}</h3>
             <div>
-                <input className={error ? 'error' : ''}
+                <h3><Button title={'X'} onClick={handleRemoveTodoList}/>{title}</h3>
+            </div>
+            <div>
+            <input className={error ? 'error' : ''}
                        value={newTaskTitle}
                        onChange={handleTitleChange}
                        onKeyDown={handleAddTaskOnEnter}
@@ -121,7 +130,7 @@ export const TodoListItem = ({
             </div>
             {tasks.length
                 ? <ul>{mappedTasks}</ul>
-                : <span>Your task list is empty!</span>}
+                : <span>Your TaskList is empty!</span>}
             <div>
                 <Button className={filter === 'All' ? 'activeFilter' : ''}
                         title='All'

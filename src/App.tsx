@@ -71,26 +71,42 @@ export function App() {
     const toggleTaskStatus = (taskId: string, isDone: boolean, todoListId: string) => {
         /*const updatedTasks = {...tasksObj, [todoListId]: tasksObj[todoListId].map(t => t.id === taskId ? {...t, isDone: isDone} : t)}
         setTasksObj(updatedTasks)*/
-        setTasksObj(prev => ({...prev, [todoListId]: prev[todoListId].map(t => t.id === taskId ? {...t, isDone: isDone} : t)}))
+        setTasksObj(prev => ({
+            ...prev,
+            [todoListId]: prev[todoListId].map(t => t.id === taskId ? {...t, isDone: isDone} : t)
+        }))
     }
+
+    // Удаляет список задач по его ID
+    const removeTodoListById = (todoListId: string) => {
+        setTodoLists(prev => prev.filter(tl => tl.id !== todoListId))
+        delete tasksObj[todoListId]
+        setTasksObj({...tasksObj})
+    }
+
+    // Мапит список задач для рендеринга
+    const mappedTodoLists = todoLists.map(tl => {
+        const tasksForTodolist = tasksObj[tl.id]
+
+        return (
+            <TodoListItem
+                key={tl.id}
+                id={tl.id}
+                title={tl.title}
+                tasks={tasksForTodolist}
+                removeTaskById={removeTaskById}
+                addNewTask={addNewTask}
+                toggleTaskStatus={toggleTaskStatus}
+                removeTodoListById={removeTodoListById}
+            />
+        )
+    })
 
     return (
         <div className="app">
-            {todoLists.map(tl => {
-                const tasksForTodolist = tasksObj[tl.id]
-
-                return (
-                    <TodoListItem
-                        key={tl.id}
-                        id={tl.id}
-                        title={tl.title}
-                        tasks={tasksForTodolist}
-                        removeTaskById={removeTaskById}
-                        addNewTask={addNewTask}
-                        toggleTaskStatus={toggleTaskStatus}
-                    />
-                )
-            })}
+            {todoLists.length
+                ? <>{mappedTodoLists}</>
+                : <span>Your TodoList is empty!</span>}
         </div>
     )
 }
