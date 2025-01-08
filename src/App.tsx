@@ -56,7 +56,10 @@ export function App() {
     const removeTaskById = (taskId: string, todoListId: string) => {
         /*const updatedTasks = {...tasksObj, [todoListId]: tasksObj[todoListId].filter(task => task.id !== taskId)}
         setTasksObj(updatedTasks);*/
-        setTasksObj(prev => ({...prev, [todoListId]: prev[todoListId].filter(task => task.id !== taskId)}))
+        setTasksObj(prev => ({
+            ...prev,
+            [todoListId]: prev[todoListId].filter(task => task.id !== taskId)
+        }))
     }
 
     // Добавляет новую задачу
@@ -64,7 +67,10 @@ export function App() {
         const newTask: TasksType = {id: v1(), title: newTaskTitle, isDone: false}
         /*const updatedTasks = {...tasksObj, [todoListId]: [newTask, ...tasksObj[todoListId]]}
         setTasksObj(updatedTasks)*/
-        setTasksObj(prev => ({...prev, [todoListId]: [newTask, ...prev[todoListId]]}))
+        setTasksObj(prev => ({
+            ...prev,
+            [todoListId]: [newTask, ...prev[todoListId]]
+        }))
     }
 
     // Переключает статус задачи (выполнена/не выполнена) по её ID
@@ -79,7 +85,8 @@ export function App() {
 
     // Удаляет список задач по его ID
     const removeTodoListById = (todoListId: string) => {
-        setTodoLists(prev => prev.filter(tl => tl.id !== todoListId))
+        setTodoLists(prev =>
+            prev.filter(tl => tl.id !== todoListId))
         delete tasksObj[todoListId]
         setTasksObj({...tasksObj})
     }
