@@ -55,8 +55,6 @@ export function App() {
 
     // Удаляет задачу по её ID
     const removeTaskById = (taskId: string, todoListId: string) => {
-        /*const updatedTasks = {...tasksObj, [todoListId]: tasksObj[todoListId].filter(task => task.id !== taskId)}
-        setTasksObj(updatedTasks);*/
         setTasksObj(prev => ({
             ...prev,
             [todoListId]: prev[todoListId].filter(task => task.id !== taskId)}))
@@ -65,8 +63,6 @@ export function App() {
     // Добавляет новую задачу
     const addNewTask = (newTaskTitle: string, todoListId: string) => {
         const newTask: TasksType = {id: v1(), title: newTaskTitle, isDone: false}
-        /*const updatedTasks = {...tasksObj, [todoListId]: [newTask, ...tasksObj[todoListId]]}
-        setTasksObj(updatedTasks)*/
         setTasksObj(prev => ({
             ...prev,
             [todoListId]: [newTask, ...prev[todoListId]]}))
@@ -74,8 +70,6 @@ export function App() {
 
     // Переключает статус задачи (выполнена/не выполнена) по её ID
     const toggleTaskStatus = (taskId: string, isDone: boolean, todoListId: string) => {
-        /*const updatedTasks = {...tasksObj, [todoListId]: tasksObj[todoListId].map(t => t.id === taskId ? {...t, isDone: isDone} : t)}
-        setTasksObj(updatedTasks)*/
         setTasksObj(prev => ({
             ...prev,
             [todoListId]: prev[todoListId].map(t => t.id === taskId ? {...t, isDone: isDone} : t)}))
