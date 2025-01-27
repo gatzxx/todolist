@@ -76,10 +76,12 @@ export function TodoListItem(
                 <Button onClick={handleRemoveTask}
                         title='X'
                 />
+
                 <input type="checkbox"
                        checked={t.isDone}
                        onChange={e => handleToggleTaskStatus(t.id, e.currentTarget.checked)}
                 />
+
                 <EditableSpan title={t.title}
                               onTitleChange={handleChangeTitle}
                 />
@@ -93,6 +95,7 @@ export function TodoListItem(
                 <Button title={'X'}
                         onClick={handleRemoveTodoList}
                 />
+
                 <EditableSpan title={title}
                               onTitleChange={handleChangeTitle}
                 />
