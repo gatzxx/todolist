@@ -1,5 +1,9 @@
+import {AppBar, Container, createTheme, Grid2, IconButton, Paper, Switch, ThemeProvider, Toolbar} from "@mui/material";
 import {FilterType, TodoListItem} from "./TodoListItem.tsx";
+import {containerSx} from "./TodolistItem.styles.ts";
+import MenuIcon from '@mui/icons-material/Menu';
 import {AddItemForm} from "./AddItemForm.tsx";
+import {NavButton} from "./NavButton.ts";
 import {useState} from "react";
 import {v1} from "uuid";
 import './App.css'
@@ -19,6 +23,8 @@ type TodoListsType = {
 type TasksObjType = {
     [key: string]: TasksType[]
 }
+
+type ThemeMode = 'dark' | 'light'
 
 export function App() {
 
@@ -47,6 +53,21 @@ export function App() {
     const [todoLists, setTodoLists] = useState(initialTodoLists)
 
     const [tasksObj, setTasksObj] = useState(initialTasks)
+
+    const [themeMode, setThemeMode] = useState<ThemeMode>('light')
+
+    const theme = createTheme({
+        palette: {
+            mode: themeMode,
+            primary: {
+                main: '#087EA4',
+            },
+        },
+    })
+
+    const changeMode = () => {
+        setThemeMode(themeMode == 'light' ? 'dark' : 'light')
+    }
 
     const removeTaskById = (taskId: string, todoListId: string) => {
         setTasksObj(prev => ({
@@ -100,32 +121,57 @@ export function App() {
         const tasksForTodolist = tasksObj[tl.id]
 
         return (
-            <TodoListItem key={tl.id}
-                          id={tl.id}
-                          title={tl.title}
-                          tasks={tasksForTodolist}
-                          removeTaskById={removeTaskById}
-                          addNewTask={addNewTask}
-                          toggleTaskStatus={toggleTaskStatus}
-                          removeTodoListById={removeTodoListById}
-                          changeTaskTitle={changeTaskTitle}
-                          changeTodoListTitle={changeTodoListTitle}
-            />
+            <Grid2 key={tl.id}>
+                <Paper sx={{p: '0 20px 20px 20px'}}>
+                    <TodoListItem id={tl.id}
+                                  title={tl.title}
+                                  tasks={tasksForTodolist}
+                                  removeTaskById={removeTaskById}
+                                  addNewTask={addNewTask}
+                                  toggleTaskStatus={toggleTaskStatus}
+                                  removeTodoListById={removeTodoListById}
+                                  changeTaskTitle={changeTaskTitle}
+                                  changeTodoListTitle={changeTodoListTitle}
+                    />
+                </Paper>
+            </Grid2>
+
         )
     })
 
     return (
-        <div className="app">
+        <ThemeProvider theme={theme}>
+            <div className="app">
+                <AppBar position="static" sx={{mb: '30px'}}>
+                    <Toolbar>
+                        <Container maxWidth={'lg'} sx={containerSx}>
+                            <IconButton color="inherit">
+                                <MenuIcon/>
+                            </IconButton>
+                            <div>
+                                <NavButton>Sign in</NavButton>
+                                <NavButton>Sign up</NavButton>
+                                <NavButton background={theme.palette.primary.dark}>Faq</NavButton>
+                                <Switch color={'default'} onChange={changeMode}/>
+                            </div>
+                        </Container>
+                    </Toolbar>
+                </AppBar>
 
-            <div>
-                <AddItemForm addItem={addNewTodoList}/>
+                <Container maxWidth={'lg'}>
+                    <Grid2 container sx={{mb: '30px'}}>
+                        <AddItemForm addItem={addNewTodoList}/>
+                    </Grid2>
+
+                    <Grid2 container spacing={4}>
+                        {
+                            todoLists.length
+                                ? <>{mappedTodoLists}</>
+                                : <span>Your TodoList is empty!</span>
+                        }
+                    </Grid2>
+                </Container>
             </div>
-
-            {
-                todoLists.length
-                    ? <>{mappedTodoLists}</>
-                    : <span>Your TodoList is empty!</span>
-            }
-        </div>
+        </ThemeProvider>
     )
 }

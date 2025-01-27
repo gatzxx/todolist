@@ -1,7 +1,9 @@
+import {Checkbox, IconButton, List, ListItem} from "@mui/material";
+import {getListItemSx} from "./TodolistItem.styles.ts";
+import DeleteIcon from '@mui/icons-material/Delete';
 import {EditableSpan} from "./EditableSpan.tsx";
 import {AddItemForm} from "./AddItemForm.tsx";
 import {FilterBar} from "./FilterBar.tsx";
-import {Button} from "./Button.tsx";
 import {TasksType} from "./App.tsx";
 import {useState} from "react";
 
@@ -70,35 +72,35 @@ export function TodoListItem(
         const handleChangeTitle = (value: string) => changeTaskTitle(value, t.id, id)
 
         return (
-            <li key={t.id}
-                className={t.isDone ? 'isDone' : ''}
+            <ListItem key={t.id}
+                      sx={getListItemSx(t.isDone)}
             >
-                <Button onClick={handleRemoveTask}
-                        title='X'
-                />
-
-                <input type="checkbox"
-                       checked={t.isDone}
-                       onChange={e => handleToggleTaskStatus(t.id, e.currentTarget.checked)}
+                <Checkbox checked={t.isDone}
+                          onChange={e => handleToggleTaskStatus(t.id, e.currentTarget.checked)}
                 />
 
                 <EditableSpan title={t.title}
                               onTitleChange={handleChangeTitle}
                 />
-            </li>
+
+                <IconButton>
+                    <DeleteIcon onClick={handleRemoveTask}/>
+                </IconButton>
+            </ListItem>
         )
     })
 
     return (
         <div>
             <div>
-                <Button title={'X'}
-                        onClick={handleRemoveTodoList}
-                />
 
                 <EditableSpan title={title}
                               onTitleChange={handleChangeTitle}
                 />
+
+                <IconButton>
+                    <DeleteIcon onClick={handleRemoveTodoList}/>
+                </IconButton>
             </div>
 
             <AddItemForm addItem={handleAddTask}/>
@@ -106,7 +108,7 @@ export function TodoListItem(
             <div>
                 {
                     tasks.length
-                        ? <ul>{mappedTasks}</ul>
+                        ? <List>{mappedTasks}</List>
                         : <span>Your TaskList is empty!</span>
                 }
             </div>
