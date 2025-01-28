@@ -2,7 +2,7 @@ import {ChangeEvent, KeyboardEvent, useState} from "react"
 import {IconButton, TextField} from "@mui/material"
 import AddIcon from '@mui/icons-material/Add';
 
-type AddItemFormPropsType = {
+type Props = {
     addItem: (title: string) => void
 }
 
@@ -10,7 +10,7 @@ export function AddItemForm(
     {
         addItem
     }
-    : AddItemFormPropsType
+    : Props
 ) {
 
     const [error, setError] = useState<string | null>(null)
@@ -40,7 +40,7 @@ export function AddItemForm(
     }
 
     return (
-        <>
+        <div>
             <TextField label={'Enter a title'}
                        variant={'outlined'}
                        size={'small'}
@@ -57,6 +57,6 @@ export function AddItemForm(
             </IconButton>
 
             {error && <div className={'errorMessage'}>{error}</div>}
-        </>
+        </div>
     )
 }

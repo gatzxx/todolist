@@ -1,59 +1,47 @@
 import {AppBar, Container, createTheme, Grid2, IconButton, Paper, Switch, ThemeProvider, Toolbar} from "@mui/material";
-import {FilterType, TodoListItem} from "./TodoListItem.tsx";
+import {
+    createTodoListAC,
+    deleteTodoListAC,
+    todoListReducer,
+    updateTodoListTitleAC
+} from "./model/todoListReducer.ts";
+import {
+    createTaskAC,
+    deleteTaskAC,
+    taskReducer,
+    updateTaskIsDoneAC,
+    updateTaskTitleAC
+} from "./model/taskReducer.ts";
+import {Filter, TodoListItem} from "./TodoListItem.tsx";
 import {containerSx} from "./TodolistItem.styles.ts";
 import MenuIcon from '@mui/icons-material/Menu';
 import {AddItemForm} from "./AddItemForm.tsx";
+import {useReducer, useState} from "react";
 import {NavButton} from "./NavButton.ts";
-import {useState} from "react";
-import {v1} from "uuid";
 import './App.css'
 
-export type TasksType = {
+export type Tasks = {
     id: string
     title: string
     isDone: boolean
 }
 
-type TodoListsType = {
+export type TodoLists = {
     id: string
     title: string
-    filter: FilterType
+    filter: Filter
 }
 
-type TasksObjType = {
-    [key: string]: TasksType[]
+export type TasksObj = {
+    [key: string]: Tasks[]
 }
 
 type ThemeMode = 'dark' | 'light'
 
 export function App() {
 
-    const todoList1 = v1()
-    const todoList2 = v1()
-
-    const initialTodoLists: TodoListsType[] = [
-        {id: todoList1, title: 'Pop Stars 2000', filter: 'All'},
-        {id: todoList2, title: 'Pop Stars 2010', filter: 'All'},
-    ]
-
-    const initialTasks: TasksObjType = {
-        [todoList1]: [
-            {id: v1(), title: 'Britney Spears', isDone: true},
-            {id: v1(), title: 'Nirvana', isDone: false},
-            {id: v1(), title: 'Backstreet Boys', isDone: true},
-            {id: v1(), title: 'Spice Girls', isDone: false},
-        ],
-        [todoList2]: [
-            {id: v1(), title: 'Eminem', isDone: true},
-            {id: v1(), title: 'Rihanna', isDone: false},
-            {id: v1(), title: 'Justin Bieber', isDone: true},
-        ]
-    }
-
-    const [todoLists, setTodoLists] = useState(initialTodoLists)
-
-    const [tasksObj, setTasksObj] = useState(initialTasks)
-
+    const [todoLists, dispatchToTodoLists] = useReducer(todoListReducer, [])
+    const [tasks, dispatchToTasks] = useReducer(taskReducer, {})
     const [themeMode, setThemeMode] = useState<ThemeMode>('light')
 
     const theme = createTheme({
@@ -65,73 +53,56 @@ export function App() {
         },
     })
 
-    const changeMode = () => {
-        setThemeMode(themeMode == 'light' ? 'dark' : 'light')
+    const toggleThemeMode = () => setThemeMode(themeMode == 'light' ? 'dark' : 'light')
+
+    const deleteTask = (tlId: string, taskId: string) => {
+        dispatchToTasks(deleteTaskAC({tlId, taskId}))
     }
 
-    const removeTaskById = (taskId: string, todoListId: string) => {
-        setTasksObj(prev => ({
-            ...prev,
-            [todoListId]: prev[todoListId].filter(task => task.id !== taskId)
-        }))
+    const createTask = (tlId: string, title: string) => {
+        dispatchToTasks(createTaskAC({tlId, title}))
     }
 
-    const addNewTask = (newTaskTitle: string, todoListId: string) => {
-        const newTask: TasksType = {id: v1(), title: newTaskTitle, isDone: false}
-        setTasksObj(prev => ({
-            ...prev,
-            [todoListId]: [newTask, ...prev[todoListId]]
-        }))
+    const updateTaskIsDone = (tlId: string, taskId: string, isDone: boolean) => {
+        dispatchToTasks(updateTaskIsDoneAC({tlId, taskId, isDone}))
     }
 
-    const toggleTaskStatus = (taskId: string, isDone: boolean, todoListId: string) => {
-        setTasksObj(prev => ({
-            ...prev,
-            [todoListId]: prev[todoListId].map(t => t.id === taskId ? {...t, isDone: isDone} : t)
-        }))
+    const updateTaskTitle = (tlId: string, taskId: string, title: string) => {
+        dispatchToTasks(updateTaskTitleAC({tlId, taskId, title}))
     }
 
-    const removeTodoListById = (todoListId: string) => {
-        setTodoLists(prev =>
-            prev.filter(tl => tl.id !== todoListId))
-        delete tasksObj[todoListId]
-        setTasksObj({...tasksObj})
+    const deleteTodoList = (id: string) => {
+        const action = deleteTodoListAC(id)
+        dispatchToTodoLists(action)
+        dispatchToTasks(action)
     }
 
-    const addNewTodoList = (newTodoListTitle: string) => {
-        const newTodoList: TodoListsType = {id: v1(), title: newTodoListTitle, filter: 'All'}
-        setTodoLists(prev => [newTodoList, ...prev])
-        setTasksObj(prev => ({...prev, [newTodoList.id]: []}))
+    const createTodoList = (title: string) => {
+        const action = createTodoListAC(title)
+        dispatchToTodoLists(action)
+        dispatchToTasks(action)
     }
 
-    const changeTaskTitle = (newTaskTitle: string, taskId: string, todoListId: string) => {
-        setTasksObj(prev => ({
-            ...prev,
-            [todoListId]: prev[todoListId].map(t => t.id === taskId ? {...t, title: newTaskTitle} : t)
-        }))
-    }
-
-    const changeTodoListTitle = (newTodoListTitle: string, todoListId: string) => {
-        setTodoLists(prev => (
-            prev.map(tl => tl.id === todoListId ? {...tl, title: newTodoListTitle} : tl)))
+    const updateTodoListTitle = (id: string, title: string) => {
+        dispatchToTodoLists(updateTodoListTitleAC({id, title}))
     }
 
     const mappedTodoLists = todoLists.map(tl => {
 
-        const tasksForTodolist = tasksObj[tl.id]
+        const tasksForTodoList = tasks[tl.id]
 
         return (
             <Grid2 key={tl.id}>
                 <Paper sx={{p: '0 20px 20px 20px'}}>
-                    <TodoListItem id={tl.id}
+                    <TodoListItem tlId={tl.id}
                                   title={tl.title}
-                                  tasks={tasksForTodolist}
-                                  removeTaskById={removeTaskById}
-                                  addNewTask={addNewTask}
-                                  toggleTaskStatus={toggleTaskStatus}
-                                  removeTodoListById={removeTodoListById}
-                                  changeTaskTitle={changeTaskTitle}
-                                  changeTodoListTitle={changeTodoListTitle}
+                                  tasks={tasksForTodoList}
+                                  createTask={createTask}
+                                  deleteTask={deleteTask}
+                                  updateTaskIsDone={updateTaskIsDone}
+                                  updateTaskTitle={updateTaskTitle}
+                                  deleteTodoList={deleteTodoList}
+                                  updateTodoListTitle={updateTodoListTitle}
                     />
                 </Paper>
             </Grid2>
@@ -152,7 +123,7 @@ export function App() {
                                 <NavButton>Sign in</NavButton>
                                 <NavButton>Sign up</NavButton>
                                 <NavButton background={theme.palette.primary.dark}>Faq</NavButton>
-                                <Switch color={'default'} onChange={changeMode}/>
+                                <Switch color={'default'} onChange={toggleThemeMode}/>
                             </div>
                         </Container>
                     </Toolbar>
@@ -160,7 +131,7 @@ export function App() {
 
                 <Container maxWidth={'lg'}>
                     <Grid2 container sx={{mb: '30px'}}>
-                        <AddItemForm addItem={addNewTodoList}/>
+                        <AddItemForm addItem={createTodoList}/>
                     </Grid2>
 
                     <Grid2 container spacing={4}>

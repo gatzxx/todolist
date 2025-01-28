@@ -1,7 +1,7 @@
 import {ChangeEvent, KeyboardEvent, useState} from "react"
 import {TextField} from "@mui/material";
 
-type EditableSpanPropsType = {
+type Props = {
     title: string
     onTitleChange: (value: string) => void
 }
@@ -10,7 +10,7 @@ export function EditableSpan(
     {
         title, onTitleChange
     }
-    : EditableSpanPropsType
+    : Props
 ) {
 
     const [editMode, setEditMode] = useState<boolean>(false)

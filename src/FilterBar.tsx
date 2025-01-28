@@ -1,38 +1,38 @@
 import {containerSx} from "./TodolistItem.styles.ts";
-import {FilterType} from "./TodoListItem.tsx";
+import {Filter} from "./TodoListItem.tsx";
 import {Box, Button} from "@mui/material";
 
-type FilterBarPropsType = {
-    filter: FilterType
-    handleFilterChange: (filters: FilterType) => void
+type Props = {
+    filter: Filter
+    handleToggleFilter: (filters: Filter) => void
 }
 
 export function FilterBar(
     {
         filter,
-        handleFilterChange
+        handleToggleFilter
     }
-    : FilterBarPropsType
+    : Props
 ) {
 
-    const handleFilterClick = (filter: FilterType) => () => handleFilterChange(filter)
+    const handleSelectFilter = (filter: Filter) => () => handleToggleFilter(filter)
 
     return (
         <Box sx={containerSx}>
             <Button variant={filter === 'All' ? 'outlined' : 'text'}
-                    onClick={handleFilterClick('All')}
+                    onClick={handleSelectFilter('All')}
             >
                 ALL
             </Button>
 
             <Button variant={filter === 'Active' ? 'outlined' : 'text'}
-                    onClick={handleFilterClick('Active')}
+                    onClick={handleSelectFilter('Active')}
             >
                 ACTIVE
             </Button>
 
             <Button variant={filter === 'Completed' ? 'outlined' : 'text'}
-                    onClick={handleFilterClick('Completed')}
+                    onClick={handleSelectFilter('Completed')}
             >
                 COMPLETED
             </Button>

@@ -4,48 +4,48 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {EditableSpan} from "./EditableSpan.tsx";
 import {AddItemForm} from "./AddItemForm.tsx";
 import {FilterBar} from "./FilterBar.tsx";
-import {TasksType} from "./App.tsx";
+import {Tasks} from "./App.tsx";
 import {useState} from "react";
 
-type TodolistItemPropsType = {
-    id: string
+type Props = {
+    tlId: string
     title: string
-    tasks: TasksType[]
-    removeTodoListById: (todoListId: string) => void
-    removeTaskById: (taskId: string, todoListId: string) => void
-    addNewTask: (newTaskTitle: string, todoListId: string) => void
-    changeTodoListTitle: (newTodoListTitle: string, todoListId: string) => void
-    toggleTaskStatus: (taskId: string, isDone: boolean, todoListId: string) => void
-    changeTaskTitle: (newTaskTitle: string, taskId: string, todoListId: string) => void
+    tasks: Tasks[]
+    deleteTodoList: (id: string) => void
+    createTask: (tlId: string, title: string) => void
+    deleteTask: (tlId: string, taskId: string) => void
+    updateTodoListTitle: (id: string, title: string) => void
+    updateTaskTitle: (tlId: string, taskId: string, title: string) => void
+    updateTaskIsDone: (tlId: string, taskId: string, isDone: boolean) => void
 }
 
-export type FilterType = 'All' | 'Active' | 'Completed'
+export type Filter = 'All' | 'Active' | 'Completed'
 
 export function TodoListItem(
     {
-        id,
+        tlId,
         title,
         tasks,
-        addNewTask,
-        removeTaskById,
-        changeTaskTitle,
-        toggleTaskStatus,
-        removeTodoListById,
-        changeTodoListTitle
+        createTask,
+        deleteTask,
+        updateTaskTitle,
+        updateTaskIsDone,
+        deleteTodoList,
+        updateTodoListTitle
     }
-    : TodolistItemPropsType
+    : Props
 ) {
 
-    const [filter, setFilter] = useState<FilterType>('All')
+    const [filter, setFilter] = useState<Filter>('All')
 
-    const handleFilterChange = (filter: FilterType) => setFilter(filter)
+    const handleToggleFilter = (filter: Filter) => setFilter(filter)
 
     const getTasksByFilter = () => {
         switch (filter) {
             case 'Active':
-                return tasks.filter(t => !t.isDone)
+                return tasks.filter(task => !task.isDone)
             case 'Completed':
-                return tasks.filter(t => t.isDone)
+                return tasks.filter(task => task.isDone)
             default:
                 return tasks
         }
@@ -53,34 +53,30 @@ export function TodoListItem(
 
     let filteredTasks = getTasksByFilter()
 
-    const handleToggleTaskStatus = (taskId: string, isDone: boolean) => toggleTaskStatus(taskId, isDone, id)
+    const handleToggleTaskStatus = (taskId: string, isDone: boolean) => updateTaskIsDone(tlId, taskId, isDone)
 
+    const handleRemoveTodoList = () => deleteTodoList(tlId)
 
-    const handleRemoveTodoList = () => removeTodoListById(id)
+    const handleAddTask = (title: string) => createTask(tlId, title)
 
+    const handleChangeTodoListTitle = (title: string) => updateTodoListTitle(tlId, title)
 
-    const handleAddTask = (value: string) => addNewTask(value, id)
+    const mappedTasks = filteredTasks.map(task => {
 
+        const handleRemoveTask = () => deleteTask(tlId, task.id)
 
-    const handleChangeTitle = (value: string) => changeTodoListTitle(value, id)
-
-
-    const mappedTasks = filteredTasks.map(t => {
-
-        const handleRemoveTask = () => removeTaskById(t.id, id)
-
-        const handleChangeTitle = (value: string) => changeTaskTitle(value, t.id, id)
+        const handleChangeTaskTitle = (title: string) => updateTaskTitle(tlId, task.id, title)
 
         return (
-            <ListItem key={t.id}
-                      sx={getListItemSx(t.isDone)}
+            <ListItem key={task.id}
+                      sx={getListItemSx(task.isDone)}
             >
-                <Checkbox checked={t.isDone}
-                          onChange={e => handleToggleTaskStatus(t.id, e.currentTarget.checked)}
+                <Checkbox checked={task.isDone}
+                          onChange={e => handleToggleTaskStatus(task.id, e.currentTarget.checked)}
                 />
 
-                <EditableSpan title={t.title}
-                              onTitleChange={handleChangeTitle}
+                <EditableSpan title={task.title}
+                              onTitleChange={handleChangeTaskTitle}
                 />
 
                 <IconButton>
@@ -95,7 +91,7 @@ export function TodoListItem(
             <div>
 
                 <EditableSpan title={title}
-                              onTitleChange={handleChangeTitle}
+                              onTitleChange={handleChangeTodoListTitle}
                 />
 
                 <IconButton>
@@ -114,7 +110,7 @@ export function TodoListItem(
             </div>
 
             <FilterBar filter={filter}
-                       handleFilterChange={handleFilterChange}
+                       handleToggleFilter={handleToggleFilter}
             />
         </div>
     )
