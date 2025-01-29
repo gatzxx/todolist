@@ -1,4 +1,4 @@
-import {TodoLists} from "../App.tsx"
+import {TodoLists} from "../app/App.tsx"
 import {v1} from "uuid";
 
 const initialState: TodoLists[] = []

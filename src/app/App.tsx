@@ -4,20 +4,20 @@ import {
     deleteTodoListAC,
     todoListReducer,
     updateTodoListTitleAC
-} from "./model/todoListReducer.ts";
+} from "../model/todoListReducer.ts";
 import {
     createTaskAC,
     deleteTaskAC,
     taskReducer,
     updateTaskIsDoneAC,
     updateTaskTitleAC
-} from "./model/taskReducer.ts";
-import {Filter, TodoListItem} from "./TodoListItem.tsx";
-import {containerSx} from "./TodolistItem.styles.ts";
+} from "../model/taskReducer.ts";
+import {Filter, TodoListItem} from "../TodoListItem.tsx";
+import {containerSx} from "../TodolistItem.styles.ts";
 import MenuIcon from '@mui/icons-material/Menu';
-import {AddItemForm} from "./AddItemForm.tsx";
+import {AddItemForm} from "../AddItemForm.tsx";
 import {useReducer, useState} from "react";
-import {NavButton} from "./NavButton.ts";
+import {NavButton} from "../NavButton.ts";
 import './App.css'
 
 export type Tasks = {

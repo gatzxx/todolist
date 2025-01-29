@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {EditableSpan} from "./EditableSpan.tsx";
 import {AddItemForm} from "./AddItemForm.tsx";
 import {FilterBar} from "./FilterBar.tsx";
-import {Tasks} from "./App.tsx";
+import {Tasks} from "./app/App.tsx";
 import {useState} from "react";
 
 type Props = {
@@ -28,9 +28,9 @@ export function TodoListItem(
         tasks,
         createTask,
         deleteTask,
+        deleteTodoList,
         updateTaskTitle,
         updateTaskIsDone,
-        deleteTodoList,
         updateTodoListTitle
     }
     : Props
