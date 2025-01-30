@@ -1,5 +1,5 @@
-import {containerSx} from "./TodolistItem.styles.ts";
-import {Filter} from "./TodoListItem.tsx";
+import {containerSx} from "../styles/TodolistItem.styles.ts";
+import {Filter} from "../../model/types/types.ts";
 import {Box, Button} from "@mui/material";
 
 type Props = {
@@ -15,7 +15,9 @@ export function FilterBar(
     : Props
 ) {
 
-    const handleSelectFilter = (filter: Filter) => () => handleToggleFilter(filter)
+    const handleSelectFilter = (filter: Filter) => () => {
+        handleToggleFilter(filter)
+    }
 
     return (
         <Box sx={containerSx}>

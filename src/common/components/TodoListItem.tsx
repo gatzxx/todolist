@@ -1,78 +1,78 @@
 import {Checkbox, IconButton, List, ListItem} from "@mui/material";
-import {getListItemSx} from "./TodolistItem.styles.ts";
+import {getListItemSx} from "../styles/TodolistItem.styles.ts";
+import {Task, Filter} from "../../model/types/types.ts";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {EditableSpan} from "./EditableSpan.tsx";
 import {AddItemForm} from "./AddItemForm.tsx";
 import {FilterBar} from "./FilterBar.tsx";
-import {Tasks} from "./app/App.tsx";
-import {useState} from "react";
 
 type Props = {
     tlId: string
     title: string
-    tasks: Tasks[]
+    tasks: Task[]
+    filter: Filter
     deleteTodoList: (id: string) => void
-    createTask: (tlId: string, title: string) => void
-    deleteTask: (tlId: string, taskId: string) => void
-    updateTodoListTitle: (id: string, title: string) => void
-    updateTaskTitle: (tlId: string, taskId: string, title: string) => void
-    updateTaskIsDone: (tlId: string, taskId: string, isDone: boolean) => void
+    createTask: (payload: {tlId: string, title: string}) => void
+    deleteTask: (payload: {tlId: string, taskId: string}) => void
+    updateTodoListTitle: (payload: {id: string, title: string}) => void
+    updateTodoListFilter: (payload: {id: string, filter: Filter}) => void
+    updateTaskTitle: (payload: {tlId: string, taskId: string, title: string}) => void
+    updateTaskIsDone: (payload: {tlId: string, taskId: string, isDone: boolean}) => void
 }
-
-export type Filter = 'All' | 'Active' | 'Completed'
 
 export function TodoListItem(
     {
         tlId,
         title,
         tasks,
+        filter,
         createTask,
         deleteTask,
         deleteTodoList,
         updateTaskTitle,
         updateTaskIsDone,
-        updateTodoListTitle
+        updateTodoListTitle,
+        updateTodoListFilter
     }
     : Props
 ) {
 
-    const [filter, setFilter] = useState<Filter>('All')
-
-    const handleToggleFilter = (filter: Filter) => setFilter(filter)
-
-    const getTasksByFilter = () => {
-        switch (filter) {
-            case 'Active':
-                return tasks.filter(task => !task.isDone)
-            case 'Completed':
-                return tasks.filter(task => task.isDone)
-            default:
-                return tasks
-        }
+    const handleToggleFilter = (filter: Filter) => {
+        updateTodoListFilter({id: tlId, filter})
     }
 
-    let filteredTasks = getTasksByFilter()
+    const handleToggleTaskStatus = (payload: {taskId: string, isDone: boolean}) => {
+        updateTaskIsDone({tlId, ...payload})
+    }
 
-    const handleToggleTaskStatus = (taskId: string, isDone: boolean) => updateTaskIsDone(tlId, taskId, isDone)
+    const handleRemoveTodoList = () => {
+        deleteTodoList(tlId)
+    }
 
-    const handleRemoveTodoList = () => deleteTodoList(tlId)
+    const handleAddTask = (title: string) => {
+        createTask({tlId, title})
+    }
 
-    const handleAddTask = (title: string) => createTask(tlId, title)
+    const handleChangeTodoListTitle = (title: string) => {
+        updateTodoListTitle({id: tlId, title})
+    }
 
-    const handleChangeTodoListTitle = (title: string) => updateTodoListTitle(tlId, title)
+    const mappedTasks = tasks.map(task => {
 
-    const mappedTasks = filteredTasks.map(task => {
+        const handleRemoveTask = () => {
+            deleteTask({tlId, taskId: task.id})
+        }
 
-        const handleRemoveTask = () => deleteTask(tlId, task.id)
-
-        const handleChangeTaskTitle = (title: string) => updateTaskTitle(tlId, task.id, title)
+        const handleChangeTaskTitle = (title: string) => {
+            updateTaskTitle({tlId, taskId: task.id, title})
+        }
 
         return (
             <ListItem key={task.id}
                       sx={getListItemSx(task.isDone)}
             >
                 <Checkbox checked={task.isDone}
-                          onChange={e => handleToggleTaskStatus(task.id, e.currentTarget.checked)}
+                          onChange={e => handleToggleTaskStatus({taskId: task.id, isDone: e.currentTarget.checked})}
                 />
 
                 <EditableSpan title={task.title}
